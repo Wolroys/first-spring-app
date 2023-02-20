@@ -1,29 +1,54 @@
 package springapp.models;
 
-import jakarta.validation.constraints.Max;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
+import java.util.Date;
 
 
-
+@Entity
+@Table(name = "Book")
 public class Book {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty(message = "Need to enter the title")
+    @NotEmpty(message = "Название книги не должно быть пустым")
+    @Size(min = 2, max = 100, message = "Название книги должно быть от 2 до 100 символов длиной")
+    @Column(name = "title")
     private String title;
-    @Max(value=2023,message = "Enter correct year")
-    @Min(value = 0, message = "Enter correct year")
-    private int year;
-    @NotEmpty(message = "The book has author")
+
+    @NotEmpty(message = "Автор не должен быть пустым")
+    @Size(min = 2, max = 100, message = "Имя автора должно быть от 2 до 100 символов длиной")
+    @Column(name = "author")
     private String author;
 
-    public Book(){}
+    @Min(value = 1500, message = "Год должен быть больше, чем 1500")
+    @Column(name = "year")
+    private int year;
 
-    public Book(int id, String title, int year, String author) {
-        this.id = id;
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
+    private Person owner;
+
+    @Column(name = "taking_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date takenAt;
+
+    @Transient
+    private boolean expired;
+
+    public Book() {
+
+    }
+
+    public Book(String title, String author, int year) {
         this.title = title;
-        this.year = year;
         this.author = author;
+        this.year = year;
     }
 
     public int getId() {
@@ -42,6 +67,14 @@ public class Book {
         this.title = title;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public int getYear() {
         return year;
     }
@@ -50,11 +83,27 @@ public class Book {
         this.year = year;
     }
 
-    public String getAuthor() {
-        return author;
+    public Person getOwner() {
+        return owner;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setOwner(Person owner) {
+        this.owner = owner;
+    }
+
+    public Date getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(Date takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 }

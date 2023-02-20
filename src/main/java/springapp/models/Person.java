@@ -1,26 +1,40 @@
 package springapp.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 
+
+@Entity
+@Table(name = "Person")
 public class Person {
+    @Id
+    @Column(name = "person_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty(message = "Name shouldn't be empty")
-    @Size(min=2, max=50, message = "Name should be between 2 and 50")
-    private String name;
+    @NotEmpty(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 100, message = "Имя должно быть от 2 до 100 символов длиной")
+    @Column(name = "full_name")
+    private String fullName;
 
-    @Min(value = 1940, message = "Enter correct year: ")
-    private int year;
+    @Min(value = 1900, message = "Год рождения должен быть больше, чем 1900")
+    @Column(name = "year_of_birth")
+    private int yearOfBirth;
 
-    public Person() {}
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
 
-    public Person(int id, String name, int year) {
-        this.id = id;
-        this.name = name;
-        this.year = year;
+    public Person() {
+
+    }
+
+    public Person(String fullName, int yearOfBirth) {
+        this.fullName = fullName;
+        this.yearOfBirth = yearOfBirth;
     }
 
     public int getId() {
@@ -31,19 +45,27 @@ public class Person {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public int getYear() {
-        return year;
+    public int getYearOfBirth() {
+        return yearOfBirth;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }
